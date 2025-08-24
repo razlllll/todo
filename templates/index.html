@@ -1,0 +1,479 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sticky Wall</title>
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+<meta name="theme-color" content="#0d6efd">
+
+
+    <style>
+      /* Reset and base styling */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f5;
+      }
+
+      /* Container Layout */
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        width: 250px;
+        background: #232946;
+        padding: 28px 20px 20px 20px;
+        border-right: none;
+        box-sizing: border-box;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        box-shadow: 2px 0 16px rgba(35,41,70,0.08);
+        position: relative;
+      }
+      .sidebar::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 6px;
+        background: linear-gradient(180deg, #4caf50 0%, #2196f3 100%);
+        border-radius: 0 6px 6px 0;
+      }
+      .sidebar .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: #4caf50;
+        margin-bottom: 18px;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar .logo i {
+        font-size: 28px;
+        color: #2196f3;
+      }
+      .sidebar h2 {
+        font-size: 20px;
+        color: #fff;
+        margin-bottom: 8px;
+        margin-top: 0;
+        font-weight: 600;
+      }
+      .sidebar h3 {
+        font-size: 16px;
+        color: #b8c1ec;
+        margin-bottom: 8px;
+        margin-top: 18px;
+        font-weight: 500;
+      }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px 0;
+        width: 100%;
+      }
+      .sidebar ul li {
+        margin: 8px 0;
+        color: #eebbc3;
+        padding: 8px 14px;
+        border-radius: 8px;
+        transition: background 0.18s, color 0.18s;
+        cursor: pointer;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar ul li:hover, .sidebar ul li strong {
+        background: #393e6c;
+        color: #4caf50;
+      }
+      .sidebar .divider {
+        width: 100%;
+        height: 1px;
+        background: #393e6c;
+        margin: 16px 0 12px 0;
+        border-radius: 2px;
+      }
+      .lists, .tags {
+        width: 100%;
+      }
+      .tags {
+        margin-top: 10px;
+      }
+      .tag {
+        margin: 4px 8px 0 0;
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #232946;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        background: #eebbc3;
+        box-shadow: 0 1px 4px rgba(76,175,80,0.07);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        box-sizing: border-box;
+      }
+
+      .main-content h1 {
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+
+      /* Sticky Notes Grid */
+      .sticky-notes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      /* Individual Note Styles */
+      .note {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        min-height: 150px;
+        box-sizing: border-box;
+        transition: transform 0.2s;
+      }
+
+      .note:hover {
+        transform: scale(1.02);
+      }
+
+      .note h3 {
+        margin-top: 0;
+      }
+
+      /* Note Background Colors */
+      .note.yellow {
+        background-color: #fff9c4;
+      }
+      .note.blue {
+        background-color: #b2ebf2;
+      }
+      .note.pink {
+        background-color: #f8bbd0;
+      }
+      .note.orange {
+        background-color: #ffe0b2;
+      }
+
+      .note.add-note {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 36px;
+        background-color: #eee;
+        color: #888;
+        cursor: pointer;
+      }
+      .btn{
+        display: inline-block;
+        padding: 8px 16px;
+        margin-top: 10px;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 20px;
+        transition: background-color 0.3s;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      /* Todo Form Styling */
+      .todo-form {
+        display: flex;
+        gap: 20px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        margin-bottom: 30px;
+      }
+      .todo-form label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .todo-form input[type="text"],
+      .todo-form textarea,
+      .todo-form input[type="date"] {
+        width: 200px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        margin-top: 4px;
+        margin-bottom: 0;
+        background: #f9f9f9;
+        transition: border-color 0.2s;
+      }
+      .todo-form textarea {
+        min-height: 36px;
+        resize: vertical;
+      }
+      .todo-form input:focus,
+      .todo-form textarea:focus {
+        border-color: #4caf50;
+        outline: none;
+      }
+      a{
+        text-decoration: none;
+      }
+      .btn:hover {
+        background-color: rgb(107, 107, 107);
+      }
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.3);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 60px auto;
+        padding: 30px 30px 20px 30px;
+        border: 1px solid #888;
+        width: 350px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        position: relative;
+        animation: modalFadeIn 0.2s;
+      }
+      @keyframes modalFadeIn {
+        from { transform: translateY(-40px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 18px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .close:hover {
+        color: #f44336;
+      }
+      .modal h2 {
+        margin-top: 0;
+        margin-bottom: 18px;
+        font-size: 22px;
+        color: #333;
+      }
+      #installBtn {
+        position: absolute;
+        bottom: 286px;
+        left: 50%;
+         padding: 8px 16px;
+        transform: translateX(-50%);
+        z-index: 1001;
+         background-color: #4caf50;
+        color: rgb(243, 244, 255);
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        
+       }
+
+     
+      
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        
+        <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
+        <h2>Menu</h2>
+        
+        <ul>0
+          <li><i class="fas fa-calendar-alt"></i> Upcoming</li>
+          <li><i class="fas fa-sun"></i> Today</li>
+          <li><i class="fas fa-calendar"></i> Calendar</li>
+          <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
+        </ul><button id="installBtn" style="display:none;" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+  Install App
+</button>
+
+        <div class="divider"></div>
+        <div class="lists">
+          <h3><i class="fas fa-list"></i> Lists</h3>
+          <ul>
+            <li><i class="fas fa-user"></i> Personal</li>
+            <li><i class="fas fa-briefcase"></i> Work</li>
+            <li><i class="fas fa-list-ul"></i> List 1</li>
+          </ul>
+        </div>
+        <div class="divider"></div>
+        <div class="tags">
+          <h3><i class="fas fa-tags"></i> Tags</h3>
+          <span class="tag tag1">Tag 1</span>
+          <span class="tag tag2">Tag 2</span>
+          <span class="tag tag3">Tag 3</span>
+        </div>
+      </aside>
+      <main class="main-content">
+        <h1>Sticky Wall</h1>
+        <!-- Add Todo Button -->
+        <div style="margin-bottom: 20px;">
+          <button class="btn" id="openModalBtn" type="button">Add Todo</button>
+        </div>
+
+        <!-- Popup Modal for Todo Form -->
+        <div id="todoModal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="closeModalBtn">&times;</span>
+            <h2>Add New Todo</h2>
+            <form method="post" action="{% url 'add_todo' %}" class="todo-form" style="box-shadow:none; margin-bottom:0; background:transparent;">
+              {% csrf_token %}
+              <div>
+                <label for="id_title">Title:</label>
+                {{ form.title }}
+              </div>
+              <div>
+                <label for="id_description">Description:</label>
+                {{ form.description }}
+              </div>
+              <div>
+                <label for="id_due_date">Due Date:</label>
+                {{ form.due_date }}
+              </div>
+              <button class="btn" type="submit">Add Todo</button>
+            </form>
+          </div>
+        </div>
+    <script>
+      // Modal open/close logic
+      document.addEventListener('DOMContentLoaded', function(){
+        var modal = document.getElementById('todoModal');
+        var openBtn = document.getElementById('openModalBtn');
+        var closeBtn = document.getElementById('closeModalBtn');
+        openBtn.onclick = function() {
+          modal.style.display = 'block';
+        }
+        closeBtn.onclick = function() {
+          modal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        }
+      });
+       if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("{% static 'service-worker.js' %}")
+        .then((registration) => {
+          console.log("ServiceWorker registered:", registration);
+        })
+        .catch((error) => {
+          console.log("ServiceWorker registration failed:", error);
+        });
+    });
+  }
+   let deferredPrompt;
+  const installBtn = document.getElementById("installBtn");
+
+  // Listen for beforeinstallprompt
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault(); // Prevent auto prompt
+    deferredPrompt = e; // Save the event
+    installBtn.style.display = "block"; // Show the button
+  });
+
+  // Button click → trigger install
+  installBtn.addEventListener("click", async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Show the install prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response: ${outcome}`);
+      deferredPrompt = null; // Reset
+      installBtn.style.display = "none"; // Hide after installing
+    }
+  });
+
+  // Optional: detect if already installed
+  window.addEventListener("appinstalled", () => {
+    console.log("App installed successfully");
+    installBtn.style.display = "none";
+  });
+    </script>
+        <div class="sticky-notes">
+          {% for todo in todos %}
+          <div class="note orange">
+            <h3>{{ todo.title }}</h3>
+            <ul>
+              <li>{{ todo.description }}</li>
+              <li>Due: {{ todo.due_date }}</li>
+              <!-- <li>Created: {{ todo.created_at }}</li> -->
+              <li>Status: {{ todo.completed }}</li>
+              <!-- <li>Landing page match</li> -->
+              <!-- <li>Index: {{ todo.index }}</li> -->
+            </ul>
+            <button class="btn"><a href="{% url 'delete_todo' todo.id %}">Delete</a></button>
+            <button class="btn"><a href="{% url 'complete_todo' todo.id %}">Complete</a></button>
+            <button class="btn"><a href="{% url 'edit_todo' todo.id %}">Edit</a></button>
+          </div>
+          {% endfor %}
+        </div>
+      </main>
+            <main class="main-content">
+        <h1>Completed Todos</h1>
+        <div class="sticky-notes">
+          {% for todo in completed_todos %}
+          <div class="note blue">
+            <h3>{{ todo.title }}</h3>
+            <ul>
+              <li>{{ todo.description }}</li>
+              <li>Due: {{ todo.due_date }}</li>
+              <!-- <li>Created: {{ todo.created_at }}</li> -->
+              <li>Status: {{ todo.completed }}</li>
+              <!-- <li>Landing page match</li> -->
+              <!-- <li>Index: {{ todo.index }}</li> -->
+            </ul>
+            <button class="btn"><a href="{% url 'delete_todo' todo.id %}">Delete</a></button>
+            <button class="btn"><a href="{% url 'complete_todo' todo.id %}">Not Completed</a></button>
+          </div>
+          {% endfor %}
+
+        </div>
+        
+      </main>
+    </div>
+  </body>
+</html>
