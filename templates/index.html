@@ -183,64 +183,42 @@
         }
       }
 
-      /* Sidebar Styles */
-      .sidebar {
-        width: 250px;
+      /* Header Bar Styles */
+      .header-bar {
+        width: 100vw;
         background: #232946;
-        padding: 28px 20px 20px 20px;
-        border-right: none;
-        box-sizing: border-box;
-        min-height: 100vh;
+        color: #fff;
+        box-shadow: 0 2px 16px rgba(35,41,70,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 2000;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        box-shadow: 2px 0 16px rgba(35,41,70,0.08);
-        position: relative;
+        align-items: stretch;
       }
-      .sidebar::before {
-        content: '';
-        position: absolute;
-        left: 0; top: 0; bottom: 0;
-        width: 6px;
-        background: linear-gradient(180deg, #4caf50 0%, #2196f3 100%);
-        border-radius: 0 6px 6px 0;
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 18px;
+        flex-wrap: wrap;
       }
-      .sidebar .logo {
+      .header-bar .logo {
         font-size: 28px;
         font-weight: bold;
         color: #4caf50;
-        margin-bottom: 18px;
-        letter-spacing: 1px;
         display: flex;
         align-items: center;
         gap: 8px;
       }
-      .sidebar .logo i {
-        font-size: 28px;
-        color: #2196f3;
-      }
-      .sidebar h2 {
-        font-size: 20px;
-        color: #fff;
-        margin-bottom: 8px;
-        margin-top: 0;
-        font-weight: 600;
-      }
-      .sidebar h3 {
-        font-size: 16px;
-        color: #b8c1ec;
-        margin-bottom: 8px;
-        margin-top: 18px;
-        font-weight: 500;
-      }
-      .sidebar ul {
+      .nav-menu ul {
+        display: flex;
+        gap: 18px;
         list-style: none;
+        margin: 0;
         padding: 0;
-        margin: 0 0 18px 0;
-        width: 100%;
       }
-      .sidebar ul li {
-        margin: 8px 0;
+      .nav-menu li {
         color: #eebbc3;
         padding: 8px 14px;
         border-radius: 8px;
@@ -251,25 +229,37 @@
         align-items: center;
         gap: 10px;
       }
-      .sidebar ul li:hover, .sidebar ul li strong {
+      .nav-menu li:hover, .nav-menu li strong {
         background: #393e6c;
         color: #4caf50;
       }
-      .sidebar .divider {
-        width: 100%;
-        height: 1px;
-        background: #393e6c;
-        margin: 16px 0 12px 0;
-        border-radius: 2px;
+      .header-lists-tags {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 32px;
+        padding: 0 18px 10px 18px;
+        flex-wrap: wrap;
       }
       .lists, .tags {
-        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
-      .tags {
-        margin-top: 10px;
+      .list-title, .tag-title {
+        color: #b8c1ec;
+        font-weight: 500;
+        margin-right: 6px;
+      }
+      .list-item {
+        color: #eebbc3;
+        background: #393e6c;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 14px;
       }
       .tag {
-        margin: 4px 8px 0 0;
+        margin: 0 4px 0 0;
         padding: 4px 12px;
         border-radius: 8px;
         font-size: 13px;
@@ -278,6 +268,39 @@
         letter-spacing: 0.5px;
         background: #eebbc3;
         box-shadow: 0 1px 4px rgba(76,175,80,0.07);
+      }
+      @media (max-width: 900px) {
+        .header-content, .header-lists-tags {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .nav-menu ul {
+          flex-direction: column;
+          gap: 6px;
+        }
+        .header-bar .logo {
+          font-size: 22px;
+        }
+      }
+      @media (max-width: 600px) {
+        .header-content, .header-lists-tags {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+          padding: 0 6px 6px 6px;
+        }
+        .header-bar .logo {
+          font-size: 18px;
+        }
+        .nav-menu ul {
+          flex-direction: column;
+          gap: 4px;
+        }
+        .list-item, .tag {
+          font-size: 12px;
+          padding: 2px 6px;
+        }
       }
 
       /* Main Content */
@@ -476,38 +499,36 @@
 
   <body>
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-  <div class="container">
-  <aside class="sidebar" id="sidebar">
-        
-        <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
-        <h2>Menu</h2>
-        
-        <ul>0
+  <header class="header-bar">
+    <div class="header-content">
+      <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
+      <nav class="nav-menu">
+        <ul>
           <li><i class="fas fa-calendar-alt"></i> Upcoming</li>
           <li><i class="fas fa-sun"></i> Today</li>
           <li><i class="fas fa-calendar"></i> Calendar</li>
           <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
-        </ul><button id="installBtn" style="display:none;" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-  Install App
-</button>
+        </ul>
+      </nav>
+      <button id="installBtn" style="display:none;" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Install App</button>
+    </div>
+    <div class="header-lists-tags">
+      <div class="lists">
+        <span class="list-title"><i class="fas fa-list"></i> Lists:</span>
+        <span class="list-item"><i class="fas fa-user"></i> Personal</span>
+        <span class="list-item"><i class="fas fa-briefcase"></i> Work</span>
+        <span class="list-item"><i class="fas fa-list-ul"></i> List 1</span>
+      </div>
+      <div class="tags">
+        <span class="tag-title"><i class="fas fa-tags"></i> Tags:</span>
+        <span class="tag tag1">Tag 1</span>
+        <span class="tag tag2">Tag 2</span>
+        <span class="tag tag3">Tag 3</span>
+      </div>
+    </div>
+  </header>
+  <div class="container">
 
-        <div class="divider"></div>
-        <div class="lists">
-          <h3><i class="fas fa-list"></i> Lists</h3>
-          <ul>
-            <li><i class="fas fa-user"></i> Personal</li>
-            <li><i class="fas fa-briefcase"></i> Work</li>
-            <li><i class="fas fa-list-ul"></i> List 1</li>
-          </ul>
-        </div>
-        <div class="divider"></div>
-        <div class="tags">
-          <h3><i class="fas fa-tags"></i> Tags</h3>
-          <span class="tag tag1">Tag 1</span>
-          <span class="tag tag2">Tag 2</span>
-          <span class="tag tag3">Tag 3</span>
-        </div>
-      </aside>
       <main class="main-content">
         <h1>Sticky Wall</h1>
         <!-- Add Todo Button -->

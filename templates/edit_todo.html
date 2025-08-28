@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <title>Edit Todo</title>
-    <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Todo</title>
+  <style>
       body {
         font-family: Arial, sans-serif;
         background: #f4f6f5;
@@ -15,6 +16,37 @@
         padding: 30px;
         border-radius: 12px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 0;
+          height: auto;
+          min-height: 100vh;
+        }
+        .edit-container {
+          width: 98vw;
+          max-width: 98vw;
+          padding: 16px 4vw;
+          border-radius: 10px;
+          margin: 20px auto;
+        }
+        h2 {
+          font-size: 20px;
+        }
+        label {
+          font-size: 15px;
+        }
+        input[type="text"],
+        textarea,
+        input[type="date"] {
+          font-size: 15px;
+          padding: 10px 8px;
+        }
+        .btn {
+          font-size: 15px;
+          padding: 10px;
+        }
       }
       h2 {
         margin-top: 0;
