@@ -3,13 +3,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sticky Wall</title>
-  <link rel="manifest" href="{% static 'manifest.json' %}">
-<meta name="theme-color" content="#0d6efd">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#0d6efd">
 
 
     <style>
-      /* Reset and base styling */
+  /* Reset and base styling */
       body {
         margin: 0;
         font-family: Arial, sans-serif;
@@ -20,6 +21,75 @@
       .container {
         display: flex;
         height: 100vh;
+      }
+
+      @media (max-width: 900px) {
+        .container {
+          flex-direction: column;
+          height: auto;
+        }
+        .sidebar {
+          width: 100%;
+          min-height: unset;
+          flex-direction: row;
+          align-items: flex-start;
+          padding: 16px 8px;
+          box-shadow: none;
+          border-radius: 0;
+          position: static;
+        }
+        .sidebar .logo {
+          font-size: 22px;
+        }
+        .sidebar ul, .lists, .tags {
+          width: auto;
+        }
+        .sidebar .divider {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          flex-direction: column;
+          height: auto;
+        }
+        .sidebar {
+          display: flex;
+          width: 100%;
+          min-height: unset;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 10px 4px;
+          box-shadow: none;
+          border-radius: 0;
+          position: static;
+        }
+        .main-content {
+          padding: 10px;
+        }
+        .sticky-notes {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .note {
+          min-height: 100px;
+          padding: 12px;
+        }
+        .todo-form {
+          flex-direction: column;
+          gap: 10px;
+        }
+        .todo-form input[type="text"],
+        .todo-form textarea,
+        .todo-form input[type="date"] {
+          width: 100%;
+        }
+        .modal-content {
+          width: 95vw;
+          min-width: unset;
+          padding: 16px 6px 10px 6px;
+        }
       }
 
       /* Sidebar Styles */
@@ -285,7 +355,7 @@
       }
       #installBtn {
         position: absolute;
-        bottom: 286px;
+        bottom: 80px;
         left: 50%;
          padding: 8px 16px;
         transform: translateX(-50%);

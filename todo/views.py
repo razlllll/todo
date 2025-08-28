@@ -6,7 +6,10 @@ from .models import Student
 from .serializers import StudentSerializer
 
 # Create your views here.
+
 def index(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     todos = Todo.objects.filter(completed=False).order_by('index')
     completed_todos = Todo.objects.filter(completed=True).order_by('index')
     form = TodoForm()
@@ -53,28 +56,29 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-def register(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect('dashboard')
-    return render(request, 'todo/register.html')
-
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user:
+        if user is not None:
             login(request, user)
             return redirect('dashboard')
         else:
             return render(request, 'todo/login.html', {'error': 'Invalid credentials'})
     return render(request, 'todo/login.html')
 
-@login_required(login_url='login')
+def register(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if User.objects.filter(username=username).exists():
+            return render(request, 'todo/register.html', {'error': 'Username already exists'})
+        user = User.objects.create_user(username=username, password=password)
+        login(request, user)
+        return redirect('dashboard')
+    return render(request, 'todo/register.html')
+
 def dashboard(request):
     return render(request, 'todo/dashboard.html')
 
