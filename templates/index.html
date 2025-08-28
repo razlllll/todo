@@ -184,41 +184,42 @@
       }
 
       /* Header Bar Styles */
-      .header-bar {
-        width: 100vw;
+      /* Sidebar Styles */
+      .sidebar {
+        width: 250px;
         background: #232946;
-        color: #fff;
-        box-shadow: 0 2px 16px rgba(35,41,70,0.08);
-        position: sticky;
-        top: 0;
-        z-index: 2000;
+        padding: 28px 20px 20px 20px;
+        border-right: none;
+        box-sizing: border-box;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-start;
+        box-shadow: 2px 0 16px rgba(35,41,70,0.08);
+        position: relative;
       }
-      .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 18px;
-        flex-wrap: wrap;
-      }
-      .header-bar .logo {
+      .sidebar .logo {
         font-size: 28px;
         font-weight: bold;
         color: #4caf50;
+        margin-bottom: 18px;
+        letter-spacing: 1px;
         display: flex;
         align-items: center;
         gap: 8px;
       }
-      .nav-menu ul {
-        display: flex;
-        gap: 18px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
+      .sidebar .logo i {
+        font-size: 28px;
+        color: #2196f3;
       }
-      .nav-menu li {
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px 0;
+        width: 100%;
+      }
+      .sidebar ul li {
+        margin: 8px 0;
         color: #eebbc3;
         padding: 8px 14px;
         border-radius: 8px;
@@ -229,78 +230,24 @@
         align-items: center;
         gap: 10px;
       }
-      .nav-menu li:hover, .nav-menu li strong {
+      .sidebar ul li:hover, .sidebar ul li strong {
         background: #393e6c;
         color: #4caf50;
       }
-      .header-lists-tags {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 32px;
-        padding: 0 18px 10px 18px;
-        flex-wrap: wrap;
-      }
-      .lists, .tags {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .list-title, .tag-title {
-        color: #b8c1ec;
-        font-weight: 500;
-        margin-right: 6px;
-      }
-      .list-item {
-        color: #eebbc3;
-        background: #393e6c;
+      #installBtn {
+        margin: 20px 0 0 0;
+        width: 100%;
+        padding: 12px;
+        background: #4caf50;
+        color: #fff;
+        border: none;
         border-radius: 8px;
-        padding: 4px 10px;
-        font-size: 14px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
       }
-      .tag {
-        margin: 0 4px 0 0;
-        padding: 4px 12px;
-        border-radius: 8px;
-        font-size: 13px;
-        color: #232946;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        background: #eebbc3;
-        box-shadow: 0 1px 4px rgba(76,175,80,0.07);
-      }
-      @media (max-width: 900px) {
-        .header-content, .header-lists-tags {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
-        }
-        .nav-menu ul {
-          flex-direction: column;
-          gap: 6px;
-        }
-        .header-bar .logo {
-          font-size: 22px;
-        }
-      }
-      @media (max-width: 600px) {
-        .header-content, .header-lists-tags {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 6px;
-          padding: 0 6px 6px 6px;
-        }
-        .header-bar .logo {
-          font-size: 18px;
-        }
-        .nav-menu ul {
-          flex-direction: column;
-          gap: 4px;
-        }
-        .list-item, .tag {
-          font-size: 12px;
-          padding: 2px 6px;
-        }
+      #installBtn:hover {
+        background: #388e3c;
       }
 
       /* Main Content */
@@ -469,7 +416,7 @@
       }
       #installBtn {
         position: absolute;
-        bottom: 80px;
+        bottom: 14px;
         left: 50%;
          padding: 8px 16px;
         transform: translateX(-50%);
@@ -499,34 +446,14 @@
 
   <body>
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-  <header class="header-bar">
-    <div class="header-content">
+  <div class="container">
+    <aside class="sidebar" id="sidebar">
       <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
-      <nav class="nav-menu">
-        <ul>
-          <li><i class="fas fa-calendar-alt"></i> Upcoming</li>
-          <li><i class="fas fa-sun"></i> Today</li>
-          <li><i class="fas fa-calendar"></i> Calendar</li>
-          <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
-        </ul>
-      </nav>
-      <button id="installBtn" style="display:none;" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Install App</button>
-    </div>
-    <div class="header-lists-tags">
-      <div class="lists">
-        <span class="list-title"><i class="fas fa-list"></i> Lists:</span>
-        <span class="list-item"><i class="fas fa-user"></i> Personal</span>
-        <span class="list-item"><i class="fas fa-briefcase"></i> Work</span>
-        <span class="list-item"><i class="fas fa-list-ul"></i> List 1</span>
-      </div>
-      <div class="tags">
-        <span class="tag-title"><i class="fas fa-tags"></i> Tags:</span>
-        <span class="tag tag1">Tag 1</span>
-        <span class="tag tag2">Tag 2</span>
-        <span class="tag tag3">Tag 3</span>
-      </div>
-    </div>
-  </header>
+      <ul>
+        <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
+      </ul>
+      <button id="installBtn" style="display:none; margin: 20px 0 0 0; width: 100%; padding: 12px; background: #4caf50; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;" >Install App</button>
+    </aside>
   <div class="container">
 
       <main class="main-content">
