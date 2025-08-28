@@ -433,28 +433,6 @@
      
       
     </style>
-    <style>
-      #installFooter {
-        display: none;
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100vw;
-        background: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 0;
-        font-size: 18px;
-        padding: 18px 0;
-        text-align: center;
-        z-index: 3000;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-      #installFooter:hover {
-        background: #388e3c;
-      }
-    </style>
 
     <link
       rel="stylesheet"
@@ -467,7 +445,15 @@
   </head>
 
   <body>
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
   <div class="container">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
+      <ul>
+        <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
+      </ul>
+      <button id="installBtn" style="display:none; margin: 20px 0 0 0; width: 100%; padding: 12px; background: #4caf50; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;" >Install App</button>
+    </aside>
   <div class="container">
 
       <main class="main-content">
@@ -576,7 +562,6 @@
           {% endfor %}
         </div>
       </main>
-      <button id="installFooter">Install App</button>
             <main class="main-content">
         <h1>Completed Todos</h1>
         <div class="sticky-notes">
@@ -601,27 +586,6 @@
       </main>
     </div>
   <script>
-    // Install button logic for footer
-    let deferredPrompt;
-    const installFooter = document.getElementById("installFooter");
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installFooter.style.display = "block";
-    });
-    installFooter.addEventListener("click", async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response: ${outcome}`);
-        deferredPrompt = null;
-        installFooter.style.display = "none";
-      }
-    });
-    window.addEventListener("appinstalled", () => {
-      console.log("App installed successfully");
-      installFooter.style.display = "none";
-    });
     function toggleSidebar() {
       var sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('open');
