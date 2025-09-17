@@ -1,605 +1,343 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sticky Wall</title>
-    <link rel="manifest" href="{% static 'manifest.json' %}">
-    <meta name="theme-color" content="#0d6efd">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticky Wall</title>
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#0d6efd">
 
-
-    <style>
-      /* Mobile Sidebar Toggle */
-      .sidebar-toggle {
-        display: none;
-        position: absolute;
-        top: 16px;
-        left: 16px;
-        background: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 20px;
-        z-index: 2000;
-        cursor: pointer;
-      }
-      @media (max-width: 900px) {
-        .sidebar-toggle {
-          display: block;
-        }
-        .sidebar {
-          position: fixed;
-          left: -100vw;
-          top: 0;
-          height: 100vh;
-          z-index: 1500;
-          transition: left 0.3s;
-        }
-        .sidebar.open {
-          left: 0;
-        }
-        .container {
-          flex-direction: column;
-          height: auto;
-        }
-        .main-content {
-          padding: 12px;
-        }
-        .sticky-notes {
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
-        }
-      }
-      @media (max-width: 600px) {
-        .main-content {
-          padding: 6px;
-          width: 100vw;
-          box-sizing: border-box;
-        }
-        .sticky-notes {
-          grid-template-columns: 1fr;
-          gap: 8px;
-        }
-        .note {
-          min-height: 80px;
-          padding: 8px;
-        }
-        .todo-form {
-          flex-direction: column;
-          gap: 8px;
-        }
-        .todo-form input[type="text"],
-        .todo-form textarea,
-        .todo-form input[type="date"] {
-          width: 100%;
-        }
-        .modal-content {
-          width: 98vw;
-          min-width: unset;
-          padding: 8px 2px 6px 2px;
-        }
-        h1 {
-          font-size: 1.2em;
-        }
-        .btn, .main-content .btn a {
-          font-size: 18px;
-          padding: 14px 0;
-        }
-      }
-  /* Reset and base styling */
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f4f6f5;
-      }
-
-      /* Container Layout */
-      .container {
-        display: flex;
-        height: 100vh;
-      }
-
-      @media (max-width: 900px) {
-        .container {
-          flex-direction: column;
-          height: auto;
-        }
-        .sidebar {
-          width: 100%;
-          min-height: unset;
-          flex-direction: row;
-          align-items: flex-start;
-          padding: 12px 4px;
-          box-shadow: none;
-          border-radius: 0;
-          position: static;
-          overflow-x: auto;
-        }
-        .sidebar .logo {
-          font-size: 20px;
-        }
-        .sidebar ul, .lists, .tags {
-          width: auto;
-        }
-        .sidebar .divider {
-          display: none;
-        }
-        .main-content {
-          padding: 12px;
-        }
-        .sticky-notes {
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .container {
-          flex-direction: column;
-          height: auto;
-        }
-        .sidebar {
-          width: 100%;
-          min-height: unset;
-          flex-direction: column;
-          align-items: flex-start;
-          padding: 8px 2px;
-          box-shadow: none;
-          border-radius: 0;
-          position: static;
-          overflow-x: auto;
-        }
-        .main-content {
-          padding: 6px;
-          width: 100vw;
-          box-sizing: border-box;
-        }
-        .sticky-notes {
-          grid-template-columns: 1fr;
-          gap: 8px;
-        }
-        .note {
-          min-height: 80px;
-          padding: 8px;
-        }
-        .todo-form {
-          flex-direction: column;
-          gap: 8px;
-        }
-        .todo-form input[type="text"],
-        .todo-form textarea,
-        .todo-form input[type="date"] {
-          width: 100%;
-        }
-        .modal-content {
-          width: 98vw;
-          min-width: unset;
-          padding: 8px 2px 6px 2px;
-        }
-        h1 {
-          font-size: 1.2em;
-        }
-      }
-
-      /* Header Bar Styles */
-      /* Sidebar Styles */
-      .sidebar {
-        width: 250px;
-        background: #232946;
-        padding: 28px 20px 20px 20px;
-        border-right: none;
-        box-sizing: border-box;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        box-shadow: 2px 0 16px rgba(35,41,70,0.08);
-        position: relative;
-      }
-      .sidebar .logo {
-        font-size: 28px;
-        font-weight: bold;
-        color: #4caf50;
-        margin-bottom: 18px;
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .sidebar .logo i {
-        font-size: 28px;
-        color: #2196f3;
-      }
-      .sidebar ul {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 18px 0;
-        width: 100%;
-      }
-      .sidebar ul li {
-        margin: 8px 0;
-        color: #eebbc3;
-        padding: 8px 14px;
-        border-radius: 8px;
-        transition: background 0.18s, color 0.18s;
-        cursor: pointer;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .sidebar ul li:hover, .sidebar ul li strong {
-        background: #393e6c;
-        color: #4caf50;
-      }
-      #installBtn {
-        margin: 20px 0 0 0;
-        width: 100%;
-        padding: 12px;
-        background: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-      #installBtn:hover {
-        background: #388e3c;
-      }
-
-      /* Main Content */
-      .main-content {
-        flex: 1;
-        padding: 30px;
-        box-sizing: border-box;
-      }
-
-      .main-content h1 {
-        margin-top: 0;
-        margin-bottom: 20px;
-      }
-
-      /* Sticky Notes Grid */
-      .sticky-notes {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-      }
-
-      /* Individual Note Styles */
-      .note {
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        min-height: 150px;
-        box-sizing: border-box;
-        transition: transform 0.2s;
-      }
-
-      .note:hover {
-        transform: scale(1.02);
-      }
-
-      .note h3 {
-        margin-top: 0;
-      }
-
-      /* Note Background Colors */
-      .note.yellow {
-        background-color: #fff9c4;
-      }
-      .note.blue {
-        background-color: #b2ebf2;
-      }
-      .note.pink {
-        background-color: #f8bbd0;
-      }
-      .note.orange {
-        background-color: #ffe0b2;
-      }
-
-      .note.add-note {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 36px;
-        background-color: #eee;
-        color: #888;
-        cursor: pointer;
-      }
-      .btn{
-        display: inline-block;
-        padding: 8px 16px;
-        margin-top: 10px;
-        background-color: #4caf50;
-        color: white;
-        border-radius: 20px;
-        transition: background-color 0.3s;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      /* Todo Form Styling */
-      .todo-form {
-        display: flex;
-        gap: 20px;
-        align-items: flex-end;
-        flex-wrap: wrap;
-        background: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        margin-bottom: 30px;
-      }
-      .todo-form label {
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 4px;
-        display: block;
-      }
-      .todo-form input[type="text"],
-      .todo-form textarea,
-      .todo-form input[type="date"] {
-        width: 200px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 15px;
-        margin-top: 4px;
-        margin-bottom: 0;
-        background: #f9f9f9;
-        transition: border-color 0.2s;
-      }
-      .todo-form textarea {
-        min-height: 36px;
-        resize: vertical;
-      }
-      .todo-form input:focus,
-      .todo-form textarea:focus {
-        border-color: #4caf50;
-        outline: none;
-      }
-      a{
-        text-decoration: none;
-      }
-      .btn:hover {
-        background-color: rgb(107, 107, 107);
-      }
-      /* Modal Styles */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.3);
-      }
-      .modal-content {
-        background-color: #fff;
-        margin: 60px auto;
-        padding: 30px 30px 20px 30px;
-        border: 1px solid #888;
-        width: 350px;
-        border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        position: relative;
-        animation: modalFadeIn 0.2s;
-      }
-      @keyframes modalFadeIn {
-        from { transform: translateY(-40px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      .close {
-        color: #aaa;
-        position: absolute;
-        top: 10px;
-        right: 18px;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: color 0.2s;
-      }
-      .close:hover {
-        color: #f44336;
-      }
-      .modal h2 {
-        margin-top: 0;
-        margin-bottom: 18px;
-        font-size: 22px;
-        color: #333;
-      }
-      #installBtn {
-        position: absolute;
-        bottom: 589px;
-        left: 50%;
-         padding: 8px 16px;
-        transform: translateX(-50%);
-        z-index: 1001;
-         background-color: #4caf50;
-        color: rgb(243, 244, 255);
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        
-       }
-
-     
-      
-    </style>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-    />
-  </head>
-
-  <body>
-  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-  <div class="container">
-    <aside class="sidebar" id="sidebar">
-      <div class="logo"><i class="fas fa-sticky-note"></i> StickyNotes</div>
-      <ul>
-        <li><i class="fas fa-th-large"></i> <strong>Sticky Wall</strong></li>
-      </ul>
-      <button id="installBtn" style="display:none; margin: 20px 0 0 0; width: 100%; padding: 12px; background: #4caf50; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;" >Install App</button>
-    </aside>
-  <div class="container">
-
-      <main class="main-content">
-        <h1>Sticky Wall</h1>
-        <!-- Add Todo Button -->
-        <div style="margin-bottom: 20px;">
-          <button class="btn" id="openModalBtn" type="button">Add Todo</button>
-        </div>
-
-        <!-- Popup Modal for Todo Form -->
-        <div id="todoModal" class="modal">
-          <div class="modal-content">
-            <span class="close" id="closeModalBtn">&times;</span>
-            <h2>Add New Todo</h2>
-            <form method="post" action="{% url 'add_todo' %}" class="todo-form" style="box-shadow:none; margin-bottom:0; background:transparent;">
-              {% csrf_token %}
-              <div>
-                <label for="id_title">Title:</label>
-                {{ form.title }}
-              </div>
-              <div>
-                <label for="id_description">Description:</label>
-                {{ form.description }}
-              </div>
-              <div>
-                <label for="id_due_date">Due Date:</label>
-                {{ form.due_date }}
-              </div>
-              <button class="btn" type="submit">Add Todo</button>
-            </form>
-          </div>
-        </div>
-    <script>
-      // Modal open/close logic
-      document.addEventListener('DOMContentLoaded', function(){
-        var modal = document.getElementById('todoModal');
-        var openBtn = document.getElementById('openModalBtn');
-        var closeBtn = document.getElementById('closeModalBtn');
-        openBtn.onclick = function() {
-          modal.style.display = 'block';
-        }
-        closeBtn.onclick = function() {
-          modal.style.display = 'none';
-        }
-        window.onclick = function(event) {
-          if (event.target == modal) {
-            modal.style.display = 'none';
-          }
-        }
-      });
-       if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("{% static 'service-worker.js' %}")
-        .then((registration) => {
-          console.log("ServiceWorker registered:", registration);
-        })
-        .catch((error) => {
-          console.log("ServiceWorker registration failed:", error);
-        });
-    });
-  }
-   let deferredPrompt;
-  const installBtn = document.getElementById("installBtn");
-
-  // Listen for beforeinstallprompt
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault(); // Prevent auto prompt
-    deferredPrompt = e; // Save the event
-    installBtn.style.display = "block"; // Show the button
-  });
-
-  // Button click → trigger install
-  installBtn.addEventListener("click", async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt(); // Show the install prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response: ${outcome}`);
-      deferredPrompt = null; // Reset
-      installBtn.style.display = "none"; // Hide after installing
+  <style>
+    /* Global */
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+      color: #333;
     }
-  });
 
-  // Optional: detect if already installed
-  window.addEventListener("appinstalled", () => {
-    console.log("App installed successfully");
-    installBtn.style.display = "none";
-  });
-    </script>
-        <div class="sticky-notes">
-          {% for todo in todos %}
-          <div class="note orange">
-            <h3>{{ todo.title }}</h3>
-            <ul>
-              <li>{{ todo.description }}</li>
-              <li>Due: {{ todo.due_date }}</li>
-              <!-- <li>Created: {{ todo.created_at }}</li> -->
-              <li>Status: {{ todo.completed }}</li>
-              <!-- <li>Landing page match</li> -->
-              <!-- <li>Index: {{ todo.index }}</li> -->
-            </ul>
-            <button class="btn"><a href="{% url 'delete_todo' todo.id %}">Delete</a></button>
-            <button class="btn"><a href="{% url 'complete_todo' todo.id %}">Complete</a></button>
-            <button class="btn"><a href="{% url 'edit_todo' todo.id %}">Edit</a></button>
-          </div>
-          {% endfor %}
-        </div>
-      </main>
-            <main class="main-content">
-        <h1>Completed Todos</h1>
-        <div class="sticky-notes">
-          {% for todo in completed_todos %}
-          <div class="note blue">
-            <h3>{{ todo.title }}</h3>
-            <ul>
-              <li>{{ todo.description }}</li>
-              <li>Due: {{ todo.due_date }}</li>
-              <!-- <li>Created: {{ todo.created_at }}</li> -->
-              <li>Status: {{ todo.completed }}</li>
-              <!-- <li>Landing page match</li> -->
-              <!-- <li>Index: {{ todo.index }}</li> -->
-            </ul>
-            <button class="btn"><a href="{% url 'delete_todo' todo.id %}">Delete</a></button>
-            <button class="btn"><a href="{% url 'complete_todo' todo.id %}">Not Completed</a></button>
-          </div>
-          {% endfor %}
+    h1 {
+      font-size: 28px;
+      margin: 10px 0 20px;
+      color: #1f2937;
+      font-weight: 600;
+    }
 
-        </div>
-        
-      </main>
+    /* Header */
+    header {
+      background: #1e293b;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .logo {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #e2e8f0;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+
+    header nav a:hover {
+      color: #38bdf8;
+    }
+
+    /* Main */
+    .main-content {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 50px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      margin-top: 8px;
+      margin-right: 6px;
+      padding: 8px 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #1e40af;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    /* Notes Grid */
+    .sticky-notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .note {
+      padding: 20px;
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.6);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 160px;
+    }
+
+    .note:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .note h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .note ul {
+      padding-left: 18px;
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    /* Colors */
+    .note.orange { background: linear-gradient(135deg,#ffecd2,#fcb69f); }
+    .note.blue { background: linear-gradient(135deg,#a1c4fd,#c2e9fb); }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      width: 400px;
+      max-width: 90%;
+      position: relative;
+      animation: fadeIn 0.25s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+      transition: color 0.2s;
+    }
+
+    .close:hover { color: #ef4444; }
+
+    .todo-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .todo-form label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .todo-form input,
+    .todo-form textarea {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .todo-form input:focus,
+    .todo-form textarea:focus {
+      border-color: #2563eb;
+    }
+
+    .todo-form button {
+      margin-top: 6px;
+      align-self: flex-start;
+    }
+
+    /* Install Button */
+    #installBtn {
+      background: #10b981;
+    }
+    #installBtn:hover {
+      background: #059669;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <i class="fas fa-sticky-note"></i> StickyNotes
     </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#todos">Todos</a>
+      <a href="#completed">Completed</a>
+      <button id="installBtn" class="btn">Install App</button>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Active Todos -->
+    <section id="todos">
+      <h1>Active Todos</h1>
+      <div style="margin-bottom: 20px;">
+        <button class="btn" id="openModalBtn" type="button">+ Add Todo</button>
+      </div>
+      <div class="sticky-notes">
+        {% for todo in todos %}
+        <div class="note orange">
+          <h3>{{ todo.title }}</h3>
+          <ul>
+            <li>{{ todo.description }}</li>
+            <li>Due: {{ todo.due_date }}</li>
+            <li>Status: {{ todo.completed }}</li>
+          </ul>
+          <a class="btn" href="{% url 'delete_todo' todo.id %}">Delete</a>
+          <a class="btn" href="{% url 'complete_todo' todo.id %}">Complete</a>
+          <a class="btn" href="{% url 'edit_todo' todo.id %}">Edit</a>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Completed Todos -->
+    <section id="completed">
+      <h1>Completed Todos</h1>
+      <div class="sticky-notes">
+        {% for todo in completed_todos %}
+        <div class="note blue">
+          <h3>{{ todo.title }}</h3>
+          <ul>
+            <li>{{ todo.description }}</li>
+            <li>Due: {{ todo.due_date }}</li>
+            <li>Status: {{ todo.completed }}</li>
+          </ul>
+          <a class="btn" href="{% url 'delete_todo' todo.id %}">Delete</a>
+          <a class="btn" href="{% url 'complete_todo' todo.id %}">Not Completed</a>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="todoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModalBtn">&times;</span>
+      <h2>Add New Todo</h2>
+      <form method="post" action="{% url 'add_todo' %}" class="todo-form">
+        {% csrf_token %}
+        <div>
+          <label for="id_title">Title:</label>
+          {{ form.title }}
+        </div>
+        <div>
+          <label for="id_description">Description:</label>
+          {{ form.description }}
+        </div>
+        <div>
+          <label for="id_due_date">Due Date:</label>
+          {{ form.due_date }}
+        </div>
+        <button class="btn" type="submit">Add Todo</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS -->
   <script>
-    function toggleSidebar() {
-      var sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('open');
-    }
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(e) {
-      var sidebar = document.getElementById('sidebar');
-      var toggle = document.querySelector('.sidebar-toggle');
-      if (window.innerWidth <= 900 && sidebar.classList.contains('open')) {
-        if (!sidebar.contains(e.target) && e.target !== toggle) {
-          sidebar.classList.remove('open');
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('todoModal');
+      const openBtn = document.getElementById('openModalBtn');
+      const closeBtn = document.getElementById('closeModalBtn');
+
+      // ✅ Only Add Todo button opens modal
+      openBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+      });
+
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      window.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      // ✅ Install App Button (PWA)
+      let deferredPrompt;
+      const installBtn = document.getElementById('installBtn');
+      installBtn.style.display = 'none';
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'inline-block';
+      });
+
+      installBtn.addEventListener('click', async () => {
+        installBtn.style.display = 'none';
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome !== 'accepted') {
+          installBtn.style.display = 'inline-block';
         }
-      }
+        deferredPrompt = null;
+      });
     });
   </script>
-  </body>
+</body>
 </html>
