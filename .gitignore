@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# SQLite database
+db.sqlite3
+
+# Environment
+.env
+*.env
+
+# Django static & media (collected/generated)
+staticfiles/
+media/
+
+# OS files
+.DS_Store
+Thumbs.db
